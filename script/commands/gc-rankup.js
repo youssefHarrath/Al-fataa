@@ -46,8 +46,8 @@ module.exports.handleEvent = async function({ api, event, Currencies, Users, get
 			.replace(/\{name}/g, name)
 			.replace(/\{level}/g, level);
 			
-		if (existsSync(__dirname + "/rankup/")) mkdirSync(__dirname + "/rankup/", { recursive: true });
-		if (existsSync(__dirname + `/rankup/received_507463547525629.gif`)) arrayContent = { body: messsage, attachment: createReadStream(__dirname + `/rankup/received_507463547525629.gif`), mentions: [{ tag: name, id: senderID }] };
+		if (existsSync(__dirname + "noprefix/rankup/")) mkdirSync(__dirname + "/rankup/", { recursive: true });
+		if (existsSync(__dirname + `noprefix/rankup/akame.gif`)) arrayContent = { body: messsage, attachment: createReadStream(__dirname + `/rankup/received_507463547525629.gif`), mentions: [{ tag: name, id: senderID }] };
 		else arrayContent = { body: messsage, mentions: [{ tag: name, id: senderID }] };
 		const moduleName = this.config.name;
 		api.sendMessage(arrayContent, threadID, async function (error, info){
