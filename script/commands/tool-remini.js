@@ -4,7 +4,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "",
   description: "",
-  commandCategory: "الــتــرفــيــه والــالــعــاب",
+  commandCategory:"قــســم الــادوات",
   usages: "[رد على صورة]",
   cooldowns: 0
 };
