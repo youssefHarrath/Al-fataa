@@ -4,7 +4,7 @@ module.exports.config = {
     hasPermssion: 0,
     credits: "D-Jukie",
     description: "البحث عن الصور من موقع بنتريست",
-    commandCategory: "الــتــرفــيــه والــالــعــاب",
+    commandCategory: "قــســم الــادوات",
     usages: "[كلمة البحث و عدد الصور]",
     cooldowns: 0,
 };
