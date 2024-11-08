@@ -20,13 +20,13 @@ let usersSpam = {};
 
 module.exports = {
   config: {
-    name: "autokick",
+    name: "طرد-تلقائي",
     version: "1.0.0",
     credits: "NTKhang || Niio-team (Vtuan)",
     hasPermssion: 1,
     description: "تحذير الأعضاء المخالفين للألفاظ",
-    usage: "autokick on/off add/del list auto on/off",
-    commandCategory: "المجموعة",
+    usage: "طرد-تلقائي on/off add/del list auto on/off",
+    commandCategory: "الـــمــطـــور",
     cooldowns: 0
   },
 
@@ -107,20 +107,20 @@ module.exports = {
         threadData.autoKick.words.push(...wordsToAdd);
         writeDataToFile(jsonData);
         const addedWords = wordsToAdd.join(', ');
-        return api.sendMessage(`✅ تم إضافة الكلمات '${addedWords}' إلى قائمة الحظر`, event.threadID, event.messageID);
+        return api.sendMessage(`✅ | تمت إضافة الكلمة '${addedWords}' إلى قائمة الكلمات المحظورة`, event.threadID, event.messageID);
 
       case "del":
         if (!args[1]) {
-          return api.sendMessage("⚠️ الرجاء إدخال الكلمة المراد حذفها بعد الأمر 'del'", event.threadID, event.messageID);
+          return api.sendMessage("⚠️ | الرجاء إدخال الكلمة المراد حذفها بعد الأمر 'del'", event.threadID, event.messageID);
         }
         const wordToDelete = args.slice(1).join(" ");
         const index = threadData.autoKick.words.indexOf(wordToDelete);
         if (index !== -1) {
           threadData.autoKick.words.splice(index, 1);
           writeDataToFile(jsonData);
-          return api.sendMessage(`✅ تم حذف الكلمة '${wordToDelete}' من قائمة الحظر`, event.threadID, event.messageID);
+          return api.sendMessage(`✅ | تم حذف الكلمة '${wordToDelete}' من قائمة الكلمات المحظورة`, event.threadID, event.messageID);
         } else {
-          return api.sendMessage(`⚠️ الكلمة '${wordToDelete}' غير موجودة في قائمة الحظر`, event.threadID, event.messageID);
+          return api.sendMessage(`⚠️ | الكلمة '${wordToDelete}' غير موجودة في قائمة الحظر`, event.threadID, event.messageID);
         }
 
       case "list":
@@ -132,7 +132,7 @@ module.exports = {
           dd.push(b);
           cc.push(w);
         });
-        const messageContent = `📝 قائمة الكلمات المحظورة\n${cc.join("\n")}\n\n📌 الرد على هذه الرسالة بإدخال del + الرقم لحذف كلمة من الحظر`;
+        const messageContent = `📝 قائمة الكلمات المحظورة :\n${cc.join("\n")}\n\n📌 الرد على هذه الرسالة بإدخال del + الرقم لحذف كلمة من الحظر`;
         return api.sendMessage(messageContent, event.threadID, async (error, info) => {
           if (error) {
             console.error(error);
@@ -160,12 +160,12 @@ module.exports = {
         return api.sendMessage(`
 [ طرد الأعضاء تلقائيًا ]
 
-${global.config.PREFIX}autokick add + الكلمة المراد حظرها
-${global.config.PREFIX}autokick del + الكلمة المراد حذفها من الحظر
-${global.config.PREFIX}autokick list: عرض قائمة الكلمات المحظورة
-${global.config.PREFIX}autokick on/off: تفعيل/تعطيل الطرد التلقائي
-${global.config.PREFIX}autokick auto on/off: تفعيل/تعطيل الطرد التلقائي
-${global.config.PREFIX}autokick spam on/off: تفعيل/تعطيل الطرد التلقائي عند تكرار الرسائل`, event.threadID, event.messageID);
+${global.config.PREFIX}طرد-تلقائي add + الكلمة المراد حظرها
+${global.config.PREFIX}طرد-تلقائي  del + الكلمة المراد حذفها من الحظر
+${global.config.PREFIX}طرد-تلقائي  list: عرض قائمة الكلمات المحظورة
+${global.config.PREFIX}طرد-تلقائي  on/off: تفعيل/تعطيل الطرد التلقائي
+${global.config.PREFIX}طرد-تلقائي  auto on/off: تفعيل/تعطيل الطرد التلقائي
+${global.config.PREFIX}طرد-تلقائي  spam on/off: تفعيل/تعطيل الطرد التلقائي عند تكرار الرسائل`, event.threadID, event.messageID);
     }
   },
 
@@ -203,7 +203,7 @@ ${global.config.PREFIX}autokick spam on/off: تفعيل/تعطيل الطرد ا
       }
 
       if (deletedWords.length > 0) {
-        await api.sendMessage(`✅ تم حذف ${deletedWords.length} كلمة من قائمة الحظر:\n${deletedWords.join('\n')}`, threadID, messageID);
+        await api.sendMessage(`✅ | تم حذف ${deletedWords.length} كلمة من قائمة الكلمات المحظورة :\n${deletedWords.join('\n')}`, threadID, messageID);
       }
 } else {
         await api.sendMessage("⚠️ لم يتم العثور على الكلمات المحددة في قائمة الحظر", threadID, messageID);
@@ -242,7 +242,7 @@ ${global.config.PREFIX}autokick spam on/off: تفعيل/تعطيل الطرد ا
       });
     }
 
-    // التحقق من الرسائل المتكررة
+    // التحقق من الرسائل المتكررة 
     if (threadData.autoKick.autokickSpam) {
       if (!usersSpam[senderID]) {
         usersSpam[senderID] = 1;
@@ -251,16 +251,16 @@ ${global.config.PREFIX}autokick spam on/off: تفعيل/تعطيل الطرد ا
       }
 
       if (usersSpam[senderID] >= 5) { // إذا تكررت الرسائل أكثر من 5 مرات
-        api.sendMessage("⚠️ تحذير! يرجى التوقف عن إرسال الرسائل المتكررة.", threadID);
+        api.sendMessage("⚠️ | تحذير! يرجى التوقف عن إرسال الرسائل بكثرة عذا يعتبر سبام وهو مننوع في هذه المجموعة.", threadID);
         usersSpam[senderID] = 0;
 
         // طرد العضو في حال تفعيل الطرد التلقائي عند الرسائل المتكررة
         if (threadData.autoKick.autoMode) {
           api.removeUserFromGroup(senderID, threadID, (err) => {
             if (err) {
-              api.sendMessage("❌ لم أتمكن من طرد العضو، تحقق من الصلاحيات", threadID);
+              api.sendMessage("❌ | لم أتمكن من طرد العضو، تحقق من الصلاحيات", threadID);
             } else {
-              api.sendMessage("✅ تم طرد العضو بسبب تكرار الرسائل", threadID);
+              api.sendMessage("✅ | تم طرد العضو بسبب افتعال السبام", threadID);
             }
           });
         }
