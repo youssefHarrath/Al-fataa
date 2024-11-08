@@ -4,7 +4,7 @@ module.exports.config = {
   hasPermssion: 0,
   credits: "S H A D Y",
   description: "المستوى مالتك",
-  commandCategory: "ℝ𝔸ℕ𝕂",
+  commandCategory: "الــــجـــروب",
   cooldowns: 10,
   dependencies: {
     "fs-extra": "",
