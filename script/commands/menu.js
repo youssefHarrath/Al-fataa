@@ -38,7 +38,7 @@ module.exports.handleReply = async function ({ api, event, handleReply }) {
 			dataAfter.cmds.forEach(item => {
 				msg += `\n ${count+=1}. » ${item}: ${commands.get(item).config.description}`;
 			})
-			msg += "\n━━━━━━༺۵༻━━━━━━\n⌯ شـــادو بـــوت\n━━━━━━༺۵༻━━━━━━\n⌯ جــروب الــدعــم ↯";
+			msg += "\n━━━━━━༺۵༻━━━━━━\n⌯ اكــامــي بـــوت\n━━━━━━༺۵༻━━━━━━";
 		}
 	}
 	const axios = require('axios');
@@ -124,7 +124,7 @@ module.exports.run = async function({ api, event, args }) {
 			})
 			msg += `\n\n⌯ الــصــفــحــه ${page_num_input || 1}/${page_num_total}`;
 			msg +=``
-			msg += "\n━━━━━━༺۵༻━━━━━━\n⌯ شـــادو بـــوت\n━━━━━━༺۵༻━━━━━━\n⌯ جــروب الــدعــم ↯\nhttps://chat.whatsapp.com/F6gNHec7QOCERSVC5mAEGr\n━━━━━━༺۵༻━━━━━━";
+			msg += "\n━━━━━━༺۵༻━━━━━━\n⌯ اكــامــي بـــوت\n━━━━━━༺۵༻━━━━━━\n⌯ جــروب الــدعــم ↯\nhttps://chat.whatsapp.com/F6gNHec7QOCERSVC5mAEGr\n━━━━━━༺۵༻━━━━━━";
 		}
 		var msgg = {body: msg, attachment: imgP}
 		return api.sendMessage(msgg, threadID, (error, info) => {
@@ -156,7 +156,7 @@ module.exports.run = async function({ api, event, args }) {
 		group.forEach(commandGroup => msg += `\n${index_start+=1}. » ${commandGroup.group.toUpperCase()} `);
 		msg += `\n\n⌯ الــصــفــحــه【${page_num_input || 1}/${page_num_total}】`;
 		msg +=``
-		msg += `\n\n━━━━━━༺۵༻━━━━━━\n⌯ شـــادو بـــوت\n━━━━━━༺۵༻━━━━━━\n⌯ رد عــلـي الــرســالــه مــع اخــتــيــار رقــم الــمــنــيــو\n━━━━━━༺۵༻━━━━━━`;
+		msg += `\n\n━━━━━━༺۵༻━━━━━━\n⌯ رد عــلـي الــرســالــه مــع اخــتــيــار رقــم الــمــنــيــو\n━━━━━━༺۵༻━━━━━━`;
 	}
 	var msgg = {body: msg, attachment: imgP}
 	return api.sendMessage(msgg, threadID, async (error, info) => {
