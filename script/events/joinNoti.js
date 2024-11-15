@@ -36,7 +36,7 @@ module.exports.run = async function({ api, event, Users, Threads }) {
                 }
             }
             api.changeNickname(`[ . ] • ${(!global.config.BOTNAME) ? "Made By S H A D O W" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
-          	api.sendMessage(`نجح الاتصال 👀💞
+          	api.sendMessage(`نجح الاتصال 
 
 مرحبا بك في عالمي الخاص
 
