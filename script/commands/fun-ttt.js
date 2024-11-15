@@ -160,7 +160,7 @@ module.exports.handleReply = async function({ event, api, handleReply }) {
     var temp = move(row, col, data);
     var lmao = "";
     if(checkGameOver(data)) {
-      var gayban = ["GG 😎", "هه نوب 😎", "تعلم نلعب وتعال 😎", "ايزي 😎", "ايزي 😎", " EASY 😎","هه بوت 😏"];
+      var gayban = ["GG", "هه نوب ", "تعلم تلعب وتعال", "ايزي", " EASY","هه بوت "];
       if(checkAIWon(data)) lmao = `انت خسرت! ${gayban[Math.floor(Math.random() * gayban.length)]}`;
       else if(checkPlayerWon(data)) lmao = "انت فزت! :<";
       else lmao = "تعادل !";
