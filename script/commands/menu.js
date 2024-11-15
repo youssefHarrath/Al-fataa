@@ -111,7 +111,7 @@ module.exports.run = async function({ api, event, args }) {
 			check = false;
 			page_num_input = parseInt(args[1]);
 			if (isNaN(page_num_input)) msg = "رد علي الرساله برقم العنوان لاظهار الاوامر";
-			else if (page_num_input > page_num_total || page_num_input <= 0) msg = "ياغبي الرقم الي اخترته مش في المنيو اصلا 😂😂";
+			else if (page_num_input > page_num_total || page_num_input <= 0) msg = "ياغبي الرقم الي اخترته مش في المنيو اصلا ";
 			else check = true;
 		}
 		if (check) {
@@ -145,7 +145,8 @@ module.exports.run = async function({ api, event, args }) {
 		check = false;
 		page_num_input = parseInt(args[0]);
 		if (isNaN(page_num_input)) msg = "رد علي الرساله برقم العنوان لاظهار الاوامر";
-		else if (page_num_input > page_num_total || page_num_input <= 0) msg = "ياغبي الرقم الي اخترته مش في المنيو اصلا 😂😂";
+		else if (page_num_input > page_num_total || page_num_input <= 0) msg = "ياغبي الرقم الي اخترته مش في المنيو اصلا 
+			";
 		else check = true;
 	}
 	if (check) {
