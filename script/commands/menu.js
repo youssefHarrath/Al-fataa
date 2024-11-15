@@ -16,7 +16,7 @@ module.exports.handleReply = async function ({ api, event, handleReply }) {
 	let data = handleReply.content;
 	let check = false;
 	if (isNaN(num)) msg = "رد علي الرساله برقم العنوان لاظهار الاوامر";
-	else if (num > data.length || num <= 0) msg = "ياغبي الرقم الي اخترته مش في المنيو اصلا 😂😂";
+	else if (num > data.length || num <= 0) msg = "ياغبي الرقم الي اخترته مش في المنيو اصلا ";
 	else {
 		const { commands } = global.client;
 		let dataAfter = data[num-=1];
