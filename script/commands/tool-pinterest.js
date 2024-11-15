@@ -1,49 +1,71 @@
+const axios = require("axios");
+const fs = require("fs-extra");
+
 module.exports.config = {
-    name: "بنتريست",
+    name: "صور",
     version: "1.0.0",
     hasPermssion: 0,
-    credits: "D-Jukie",
-    description: "البحث عن الصور من موقع بنتريست",
+    credits: "عمر",
+    description: "صور من بنترست",
     commandCategory: "قــســم الــادوات",
-    usages: "[كلمة البحث و عدد الصور]",
-    cooldowns: 0,
+    usePrefix: false,
+    usages: "[نص]",
+    cooldowns: 3,
 };
 
+async function translateToEnglish(text) {
+    try {
+        const translationResponse = await axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q=${encodeURIComponent(text)}`);
+        return translationResponse?.data?.[0]?.[0]?.[0];
+    } catch (error) {
+        console.error("Error during translation:", error);
+        return text;  // Return the original text if translation fails
+    }
+}
+
 module.exports.run = async function({ api, event, args }) {
-    const axios = require("axios");
-    const fs = require("fs-extra");
-    const keySearch = args.join(" ");
-    
-    // التأكد من تنسيق الإدخال
-    if (!keySearch.includes("-")) {
-        return api.sendMessage({
-            body: '==== 「 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧 」====\n\n→ قم بادخالها بهذا الشكل 💓\n→ مثال : بنتريست 𝗱𝗼𝗿𝗮𝗲𝗺𝗼𝗻 -  𝟭𝟬',
-        }, event.threadID, event.messageID);
-    }
-    
-    // استخراج كلمة البحث وعدد الصور
-    const keySearchs = keySearch.split('-')[0].trim();
-    const numberSearch = parseInt(keySearch.split("-").pop().trim()) || 6;
-    
-    // طلب الصور من API
-    const res = await axios.get(`https://c-v5.onrender.com/pinterest?query=${encodeURIComponent(keySearchs)}&limit=${numberSearch}`);
-    const images = res.data; // توقع استلام قائمة روابط الصور مباشرة
 
-    // تحميل الصور وتحضيرها للإرسال
-    const attachments = [];
-    for (let i = 0; i < images.length; i++) {
-        const path = __dirname + `/cache/image_${i}.jpg`;
-        const imageData = (await axios.get(images[i], { responseType: 'arraybuffer' })).data;
-        fs.writeFileSync(path, Buffer.from(imageData, 'binary'));
-        attachments.push(fs.createReadStream(path));
+    api.setMessageReaction("⏱️", event.messageID, (err) => {}, true);
+
+    if (args.length === 0) {
+        // Prompt the user to enter a search term if none is provided
+        return api.sendMessage("[❗] أدخل كلمة البحث المراد البحث عنه في بنترست.", event.threadID, event.messageID);
     }
 
-    // إرسال الصور
-    api.sendMessage({
-        attachment: attachments,
-        body: `=== [ 𝗣𝗜𝗡𝗧𝗘𝗥𝗘𝗦𝗧 ] ====\n━━━━━━━━━━━━━━━━━━\n\n→ المراد البحث عنه : ${keySearchs}\n→ عدد الصور : ${numberSearch}`
-    }, event.threadID, event.messageID, () => {
-        // حذف الملفات المؤقتة
-        attachments.forEach((_, i) => fs.unlinkSync(__dirname + `/cache/image_${i}.jpg`));
-    });
+    let keySearch = args.join(" ");
+
+    try {
+        // Translate the search term to English if it's in Arabic
+        keySearch = await translateToEnglish(keySearch);
+
+        const pinterestResponse = await axios.get(`https://hiroshi-api.onrender.com/image/pinterest?search=${encodeURIComponent(keySearch)}`);
+        const data = pinterestResponse.data.data;
+
+        // Limit to 10 images, even if more are returned
+        const imagesToDownload = data.slice(0, 10);
+
+        const imgData = [];
+        for (let i = 0; i < imagesToDownload.length; i++) {
+            const path = __dirname + `/cache/jj${i + 1}.jpg`;
+            const imageResponse = await axios.get(imagesToDownload[i], { responseType: 'arraybuffer' });
+            fs.writeFileSync(path, Buffer.from(imageResponse.data, 'binary'));
+            imgData.push(fs.createReadStream(path));
+        }
+
+        api.setMessageReaction("✅", event.messageID, (err) => {}, true);
+
+        api.sendMessage({
+            attachment: imgData,
+            body: '[⚜️] هذه عمليات البحث ذات الصلة'
+        }, event.threadID, (err, info) => {
+            if (err) console.error(err);
+            // Delete images after sending the message
+            for (let i = 0; i < imagesToDownload.length; i++) {
+                fs.unlinkSync(__dirname + `/cache/jj${i + 1}.jpg`);
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching images:", error);
+        api.sendMessage("[❌] حدث خطأ أثناء جلب الصور. يرجى المحاولة مرة أخرى.", event.threadID);
+    }
 };

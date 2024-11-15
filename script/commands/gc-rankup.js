@@ -2,9 +2,9 @@ module.exports.config = {
 	name: "الرانك",
 	version: "1.0.1",
 	hasPermssion: 1,
-  credits: "S H A D O W",
+	credits: "عمر",
 	description: "أيقاف وتشغيل أشعار المستوى داخل المجموعة",
-  commandCategory: "الــــجـــروب", 
+	commandCategory: "الــــجـــروب",
 	dependencies: {
 		"fs-extra": ""
 	},
@@ -45,9 +45,9 @@ module.exports.handleEvent = async function({ api, event, Currencies, Users, get
 		messsage = messsage
 			.replace(/\{name}/g, name)
 			.replace(/\{level}/g, level);
-			
-		if (existsSync(__dirname + "noprefix/rankup/")) mkdirSync(__dirname + "/rankup/", { recursive: true });
-		if (existsSync(__dirname + `noprefix/rankup/akame.gif`)) arrayContent = { body: messsage, attachment: createReadStream(__dirname + `/rankup/received_507463547525629.gif`), mentions: [{ tag: name, id: senderID }] };
+
+		if (existsSync(__dirname + "/rankup/")) mkdirSync(__dirname + "/rankup/", { recursive: true });
+		if (existsSync(__dirname + `/rankup/akame.gif`)) arrayContent = { body: messsage, attachment: createReadStream(__dirname + `/rankup/alame.gif`), mentions: [{ tag: name, id: senderID }] };
 		else arrayContent = { body: messsage, mentions: [{ tag: name, id: senderID }] };
 		const moduleName = this.config.name;
 		api.sendMessage(arrayContent, threadID, async function (error, info){
@@ -69,7 +69,7 @@ module.exports.languages = {
 		"successText": "thành công thông báo rankup!",
 		"levelup": "Ôi bạn {name} êy!! Bạn đã đạt tới level {level} rồi đấy!! Chăm tương tác lên nhaaaa💖"
 	},
-	"en": {
+	"ar": {
 		"on": "تم تفعيل",
 		"off": "تم ايقاف",
 		"successText": "اشعار المستوى!",
@@ -80,11 +80,11 @@ module.exports.languages = {
 module.exports.run = async function({ api, event, Threads, getText }) {
 	const { threadID, messageID } = event;
 	let data = (await Threads.getData(threadID)).data;
-	
+
 	if (typeof data["rankup"] == "undefined" || data["rankup"] == false) data["rankup"] = true;
 	else data["rankup"] = false;
-	
+
 	await Threads.setData(threadID, { data });
 	global.data.threadData.set(threadID, data);
 	return api.sendMessage(`${(data["rankup"] == true) ? getText("on") : getText("off")} ${getText("successText")}`, threadID, messageID);
-    }
+		}

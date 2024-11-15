@@ -1,74 +1,78 @@
-module.exports.config = {
-    name: "الزواج من",
-    version: "3.1.1",
-    hasPermssion: 0,
-  credits: "S H A D O W",
-    description: "منشن للي بدك تتزوجه",
-  commandCategory: "الــتــرفــيــه والــالــعــاب",
-    usages: "تاغ",
-    cooldowns: 5,
-    dependencies: {
-        "axios": "",
-        "fs-extra": "",
-        "path": "",
-        "jimp": ""
-    }
-};
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
 
-module.exports.onLoad = async() => {
-    const { resolve } = global.nodemodule["path"];
-    const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
-    const { downloadFile } = global.utils;
-    const dirMaterial = __dirname + `/cache/canvas/`;
-    const path = resolve(__dirname, 'cache/canvas', 'marriedv5.png');
-    if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
-    if (!existsSync(path)) await downloadFile("https://i.ibb.co/mhxtgwm/49be174dafdc259030f70b1c57fa1c13.jpg", path);
+async function translateToEnglish(text) {
+  const translationResponse = await axios.get(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ar&tl=en&dt=t&q=${encodeURIComponent(text)}`);
+  return translationResponse?.data?.[0]?.[0]?.[0];
 }
 
-async function makeImage({ one, two }) {
-    const fs = global.nodemodule["fs-extra"];
-    const path = global.nodemodule["path"];
-    const axios = global.nodemodule["axios"]; 
-    const jimp = global.nodemodule["jimp"];
-    const __root = path.resolve(__dirname, "cache", "canvas");
-
-    let batgiam_img = await jimp.read(__root + "/marriedv5.png");
-    let pathImg = __root + `/batman${one}_${two}.png`;
-    let avatarOne = __root + `/avt_${one}.png`;
-    let avatarTwo = __root + `/avt_${two}.png`;
-    
-    let getAvatarOne = (await axios.get(`https://graph.facebook.com/${one}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' })).data;
-    fs.writeFileSync(avatarOne, Buffer.from(getAvatarOne, 'utf-8'));
-    
-    let getAvatarTwo = (await axios.get(`https://graph.facebook.com/${two}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' })).data;
-    fs.writeFileSync(avatarTwo, Buffer.from(getAvatarTwo, 'utf-8'));
-    
-    let circleOne = await jimp.read(await circle(avatarOne));
-    let circleTwo = await jimp.read(await circle(avatarTwo));
-    batgiam_img.composite(circleOne.resize(140, 130), 230, 110).composite(circleTwo.resize(140, 140), 120, 190);
-    
-    let raw = await batgiam_img.getBufferAsync("image/png");
-    
-    fs.writeFileSync(pathImg, raw);
-    fs.unlinkSync(avatarOne);
-    fs.unlinkSync(avatarTwo);
-    
-    return pathImg;
-}
-async function circle(image) {
-    const jimp = require("jimp");
-    image = await jimp.read(image);
-    image.circle();
-    return await image.getBufferAsync("image/png");
-}
-
-module.exports.run = async function ({ event, api, args }) {    
-    const fs = global.nodemodule["fs-extra"];
-    const { threadID, messageID, senderID } = event;
-    const mention = Object.keys(event.mentions);
-    if (!mention[0]) return api.sendMessage("Please mention 1 person.", threadID, messageID);
-    else {
-        const one = senderID, two = mention[0];
-        return makeImage({ one, two }).then(path => api.sendMessage({ body: "", attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
-    }
+export default {
+  name: "ارسمي2",
+  author: "HUSSEIN YACOUBI",
+  role: "member",
+  description: "🔮توليد صور على شكل انمي بإستخدام الذكاء الاصطناعي",
+  aliases:["ani"],
+  execute: async ({ api, event, args }) => {
+    try {
+      // Checking if the prompt is provided
+      const prompt = args.join(" ");
+      if (!prompt) {
+        return api.sendMessage("⚠️ | قم بتقديم وصف بعد الأمر من احل توليد صور انمي بإستخدام الذكاء الإصطناعي", event.threadID);
       }
+
+      // Set initial reaction to indicate processing
+      api.setMessageReaction("⏰", event.messageID, () => {}, true);
+
+      // Translate prompt to English if it's in Arabic
+      const translatedPrompt = await translateToEnglish(prompt);
+
+      // Measure time taken for generating the image
+      const startTime = new Date().getTime();
+
+      // API call to generate anime-style image
+      const baseURL = `https://c-v5.onrender.com/api/ani`;
+      const response = await axios.get(baseURL, {
+        params: { prompt: translatedPrompt },
+        responseType: 'stream'
+      });
+
+      const endTime = new Date().getTime();
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+
+      // Edit the initial message with the progress bar
+      const initialMessage = await api.sendMessage("⏳ جـارٍ تـولـيـد وصـفـك...", event.threadID);
+      setTimeout(() => api.editMessage("████▒▒▒▒▒▒ 31%", initialMessage.messageID), 500);
+      setTimeout(() => api.editMessage("██████▒▒▒▒ 59%", initialMessage.messageID), 1000);
+      setTimeout(() => api.editMessage("███████▒▒▒ 73%", initialMessage.messageID), 1500);
+      setTimeout(() => api.editMessage("█████████▒ 88%", initialMessage.messageID), 2000);
+      setTimeout(() => api.editMessage("██████████ 100%", initialMessage.messageID), 2500);
+
+      // Define file path and write stream for saving image
+      const fileName = 'anime-x-image.png';
+      const filePath = path.join(process.cwd(), 'cache', fileName);
+      const writerStream = fs.createWriteStream(filePath);
+
+      // Pipe response data to the file
+      response.data.pipe(writerStream);
+
+      writerStream.on('finish', async () => {
+        // Unsend the progress message after completion
+        api.unsendMessage(initialMessage.messageID);
+
+        // Send final message with generated image
+        await api.sendMessage({
+          body: `✅ | تــم بــنــجــاح\n\n⚙️ | البــرومــبــت: ${prompt}\n⏱️ | الــوقــت: ${timeTaken} ث`,
+          attachment: fs.createReadStream(filePath)
+        }, event.threadID);
+
+        // Add reaction to original message
+        api.setMessageReaction("✅", event.messageID, () => {}, true);
+      });
+
+    } catch (error) {
+      console.error('Error generating image:', error);
+      api.sendMessage("❌ |فــشــل الــتــولــيــد ربــمــا تــكــون الــمــشكــلــة مــن الــخــادم", event.threadID);
+    }
+  }
+};

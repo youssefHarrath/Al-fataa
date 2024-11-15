@@ -20,7 +20,7 @@ module.exports.run = async function({ api, event, args }) {
   if (!linkUp) return api.sendMessage('⚠️ | أرحوك رد على صورة', event.threadID, event.messageID);
   
   try {
-    api.sendMessage("جاري التحميل، يرجى الانتظار...", event.threadID, event.messageID);
+    api.sendMessage("", event.threadID, event.messageID);
     
     // رفع جودة الصورة باستخدام الرابط الجديد
     const response = await axios.get(`https://smfahim.xyz/4k?url=${encodeURIComponent(linkUp)}`);
